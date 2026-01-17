@@ -22,7 +22,12 @@ jobs:
         password: ${{ secrets.ACR_PASSWORD }}
     
     - name: Build and push Docker image
+      env:
+        ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
       run: |
-        docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/sample-node-app:${{ github.sha }} -t ${{ secrets.ACR_LOGIN_SERVER }}/sample-node-app:latest
-        docker push ${{ secrets.ACR_LOGIN_SERVER }}/sample-node-app:${{ github.sha }}
-        docker push ${{ secrets.ACR_LOGIN_SERVER }}/sample-node-app:latest
+        # Sanitize the login server variable to remove any trailing newlines/returns
+        LOGIN_SERVER=$(echo "${ACR_LOGIN_SERVER}" | tr -d '\r\n')
+        
+        docker build . -t $LOGIN_SERVER/sample-node-app:${{ github.sha }} -t $LOGIN_SERVER/sample-node-app:latest
+        docker push $LOGIN_SERVER/sample-node-app:${{ github.sha }}
+        docker push $LOGIN_SERVER/sample-node-app:latest
