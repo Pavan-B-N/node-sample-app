@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:24
 
 WORKDIR /app
 
@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3030
+ENV PORT=80
+EXPOSE 80
 
 CMD [ "node", "index.js" ]
